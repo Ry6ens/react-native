@@ -1,14 +1,8 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
 
-const PostsScreen = (props) => (
-  <Svg
-    viewBox="0 0 40 40"
-    width={34}
-    height={34}
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
+const Home = (props) => (
+  <Svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" {...props}>
     <Path d="M8 8h24v24H8z" />
     <Path
       clipRule="evenodd"
@@ -21,4 +15,4 @@ const PostsScreen = (props) => (
   </Svg>
 );
 
-export default PostsScreen;
+export default Home;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
 
-const LogOut = (props) => (
+const Comment = (props) => (
   <Svg
     viewBox="0 0 24 24"
     fill="none"
@@ -9,7 +9,8 @@ const LogOut = (props) => (
     {...props}
   >
     <Path
-      d="M10 22H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h5M17 16l4-4-4-4M21 12H9"
+      clipRule="evenodd"
+      d="M3 11.5a8.38 8.38 0 0 0 .9 3.8 8.5 8.5 0 0 0 7.6 4.7 8.38 8.38 0 0 0 3.8-.9L21 21l-1.9-5.7a8.38 8.38 0 0 0 .9-3.8 8.5 8.5 0 0 0-4.7-7.6 8.38 8.38 0 0 0-3.8-.9H11a8.48 8.48 0 0 0-8 8v.5Z"
       stroke="#BDBDBD"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -17,4 +18,4 @@ const LogOut = (props) => (
   </Svg>
 );
 
-export default LogOut;
+export default Comment;

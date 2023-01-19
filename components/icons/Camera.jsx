@@ -4,7 +4,7 @@ import Svg, { Path } from "react-native-svg";
 const Camera = (props) => (
   <Svg
     viewBox="0 0 24 24"
-    fill="#BDBDBD"
+    fill="#fff"
     width={24}
     height={24}
     xmlns="http://www.w3.org/2000/svg"

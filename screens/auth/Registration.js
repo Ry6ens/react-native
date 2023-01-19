@@ -11,21 +11,27 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
+import { useDispatch } from "react-redux";
+
+import { signUp } from "../../redux/auth/auth-operations";
 
 const initialState = {
-  login: "",
+  name: "",
   email: "",
   password: "",
 };
 
 export default function Registration({ navigation }) {
+  const dispatch = useDispatch();
+
   const [stateForm, setStateForm] = useState(initialState);
   const [isShowKeyBoard, setShowKeyBoard] = useState(false);
 
-  const onLogin = () => {
+  const onSubmit = () => {
     setShowKeyBoard(false);
     Keyboard.dismiss();
-    console.log(stateForm);
+
+    dispatch(signUp(stateForm));
     setStateForm(initialState);
   };
 
@@ -47,7 +53,7 @@ export default function Registration({ navigation }) {
             <View
               style={{
                 ...styles.form,
-                marginBottom: isShowKeyBoard ? -200 : 0,
+                marginBottom: isShowKeyBoard ? -190 : 0,
               }}
             >
               <Text style={styles.title}>Sign Up</Text>
@@ -55,13 +61,16 @@ export default function Registration({ navigation }) {
               <TextInput
                 style={styles.input}
                 inputMode="text"
-                placeholder="Login"
-                value={stateForm.login}
+                placeholder="Name"
+                value={stateForm.name}
                 onChangeText={(value) => {
-                  setStateForm((prevState) => ({ ...prevState, login: value }));
+                  setStateForm((prevState) => ({ ...prevState, name: value }));
                 }}
                 onFocus={() => {
                   setShowKeyBoard(true);
+                }}
+                onSubmitEditing={() => {
+                  setShowKeyBoard(false);
                 }}
               />
               <TextInput
@@ -74,6 +83,9 @@ export default function Registration({ navigation }) {
                 }}
                 onFocus={() => {
                   setShowKeyBoard(true);
+                }}
+                onSubmitEditing={() => {
+                  setShowKeyBoard(false);
                 }}
               />
               <TextInput
@@ -91,12 +103,15 @@ export default function Registration({ navigation }) {
                 onFocus={() => {
                   setShowKeyBoard(true);
                 }}
+                onSubmitEditing={() => {
+                  setShowKeyBoard(false);
+                }}
               />
 
               <TouchableOpacity
                 style={styles.btnSignUp}
                 activeOpacity={0.8}
-                onPress={onLogin}
+                onPress={onSubmit}
               >
                 <Text style={styles.btnSignUpTitle}>Sign Up</Text>
               </TouchableOpacity>
@@ -105,7 +120,7 @@ export default function Registration({ navigation }) {
                   Already have an account?
                 </Text>
                 <Text
-                  style={styles.textQuestion}
+                  style={{ ...styles.textQuestion, color: "#FF6C00" }}
                   onPress={() => navigation.navigate("Login")}
                 >
                   Log In

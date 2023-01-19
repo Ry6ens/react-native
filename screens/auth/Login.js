@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   Platform,
   TouchableOpacity,
-  // Dimensions,
 } from "react-native";
 
 const initialState = {
@@ -21,20 +20,6 @@ const initialState = {
 export default function Login({ navigation }) {
   const [stateForm, setStateForm] = useState(initialState);
   const [isShowKeyBoard, setShowKeyBoard] = useState(false);
-
-  // const [dimensions, setDimensions] = useState(
-  //   Dimensions.get("window").width - 20 * 2
-  // );
-
-  // useEffect(() => {
-  //   const onChange = () => {
-  //     const width = Dimensions.get("window").width - 20 * 2;
-  //     setDimensions(width);
-  //   };
-
-  //   const subscription = Dimensions.addEventListener("change", onChange);
-  //   return () => subscription?.remove();
-  // });
 
   const onLogin = () => {
     setShowKeyBoard(false);
@@ -61,8 +46,7 @@ export default function Login({ navigation }) {
             <View
               style={{
                 ...styles.form,
-                marginBottom: isShowKeyBoard ? -190 : 0,
-                // width: dimensions,
+                marginBottom: isShowKeyBoard ? -170 : 0,
               }}
             >
               <Text style={styles.title}>Log In</Text>
@@ -77,6 +61,9 @@ export default function Login({ navigation }) {
                 }}
                 onFocus={() => {
                   setShowKeyBoard(true);
+                }}
+                onSubmitEditing={() => {
+                  setShowKeyBoard(false);
                 }}
               />
               <TextInput
@@ -94,6 +81,9 @@ export default function Login({ navigation }) {
                 onFocus={() => {
                   setShowKeyBoard(true);
                 }}
+                onSubmitEditing={() => {
+                  setShowKeyBoard(false);
+                }}
               />
 
               <TouchableOpacity
@@ -106,7 +96,7 @@ export default function Login({ navigation }) {
               <View style={styles.overlayLogIn}>
                 <Text style={styles.textQuestion}>Don't have an account?</Text>
                 <Text
-                  style={styles.textQuestion}
+                  style={{ ...styles.textQuestion, color: "#FF6C00" }}
                   onPress={() => navigation.navigate("Registration")}
                 >
                   Sign Up
