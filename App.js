@@ -1,14 +1,12 @@
-import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
-import { useRoute } from "./router";
+import { persistedStore, store } from "./redux/store";
 
-import { store } from "./redux/store";
+import Main from "./components/Main";
 
 const App = () => {
-  const routing = useRoute(false);
-
   const [fontsLoaded] = useFonts({
     RobotoBold: require("./assets/fonts/Roboto-Bold.ttf"),
     RobotoMedium: require("./assets/fonts/Roboto-Medium.ttf"),
@@ -21,7 +19,9 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>{routing}</NavigationContainer>
+      <PersistGate loading={null} persistor={persistedStore}>
+        <Main />
+      </PersistGate>
     </Provider>
   );
 };

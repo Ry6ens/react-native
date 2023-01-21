@@ -1,0 +1,7 @@
+{
+  "extends": ["plugin:react/recommended", "prettier", "prettier/react"],
+  "plugins": ["react", "react-native"],
+  "rules": {
+    "no-console": "warn"
+  }
+}

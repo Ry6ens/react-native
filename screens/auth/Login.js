@@ -11,6 +11,9 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
+import { useDispatch } from "react-redux";
+
+import { logIn } from "../../redux/auth/auth-operations";
 
 const initialState = {
   email: "",
@@ -18,13 +21,16 @@ const initialState = {
 };
 
 export default function Login({ navigation }) {
+  const dispatch = useDispatch();
+
   const [stateForm, setStateForm] = useState(initialState);
   const [isShowKeyBoard, setShowKeyBoard] = useState(false);
 
-  const onLogin = () => {
+  const onSubmit = () => {
     setShowKeyBoard(false);
     Keyboard.dismiss();
-    console.log(stateForm);
+
+    dispatch(logIn(stateForm));
     setStateForm(initialState);
   };
 
@@ -89,7 +95,7 @@ export default function Login({ navigation }) {
               <TouchableOpacity
                 style={styles.btnSignUp}
                 activeOpacity={0.8}
-                onPress={onLogin}
+                onPress={onSubmit}
               >
                 <Text style={styles.btnSignUpTitle}>Log In</Text>
               </TouchableOpacity>

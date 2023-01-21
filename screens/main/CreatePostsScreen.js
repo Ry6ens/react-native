@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,38 +10,85 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
-} from "react-native";
-import { Camera, CameraType } from "expo-camera";
-import * as Location from "expo-location";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { Camera, CameraType } from 'expo-camera';
+import * as Location from 'expo-location';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
 
-import MapPinIcon from "../../components/icons/MapPin";
-import CameraIcon from "../../components/icons/Camera";
+import { db, storage } from '../../firebase/config';
 
-const initialState = {
-  picture: null,
-  title: "",
-  // location: "Location...",
-  location: null,
-};
+import { getUserId } from '../../redux/auth/auth-selectors';
+
+import MapPinIcon from '../../components/icons/MapPin';
+import CameraIcon from '../../components/icons/Camera';
 
 export default function CreatePostsScreen({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [camera, setCamera] = useState(null);
-  const [stateForm, setStateForm] = useState(initialState);
   const [isShowKeyBoard, setShowKeyBoard] = useState(false);
+
+  const [picture, setPicture] = useState(null);
+  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState({ city: '', country: '' });
+
+  const userId = useSelector(getUserId);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      const address = await Location.reverseGeocodeAsync(location.coords);
+      const { city, country } = address[0];
+      setAddress({ city, country });
+    })();
+  }, []);
 
   const takePicture = async () => {
     const picture = await camera.takePictureAsync();
-    const location = await Location.getCurrentPositionAsync({});
-    console.log(location);
-    setStateForm((prevState) => ({ ...prevState, picture: picture.uri }));
-    setStateForm((prevState) => ({ ...prevState, location: location.coords }));
+    setPicture(picture.uri);
+  };
+
+  const uploadPicture = async () => {
+    const response = await fetch(picture);
+    const file = await response.blob();
+
+    const uniquePostId = Date.now().toString();
+
+    const storageRef = ref(storage, `postImage/${uniquePostId}`);
+    await uploadBytes(storageRef, file);
+    const uploadToServer = await getDownloadURL(
+      ref(storage, `postImage/${uniquePostId}`)
+    );
+    return uploadToServer;
+  };
+
+  const uploadPost = async () => {
+    const picture = await uploadPicture();
+
+    const docRef = await addDoc(collection(db, 'posts'), {
+      uid: userId,
+      picture: picture,
+      title: title,
+      location: location.coords,
+      address: address,
+    });
   };
 
   const createPost = () => {
-    navigation.navigate("Posts", stateForm);
-    setStateForm(initialState);
+    uploadPost();
+    navigation.navigate('Posts');
+
+    setPicture(null);
+    setTitle('');
   };
 
   const keyboardHide = () => {
@@ -51,18 +98,15 @@ export default function CreatePostsScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <TouchableWithoutFeedback onPress={keyboardHide}>
         <View style={styles.inner}>
           <Camera style={styles.photoContainer} type={type} ref={setCamera}>
-            {stateForm.picture && (
+            {picture && (
               <View style={styles.takePhotoContainer}>
-                <Image
-                  source={{ uri: stateForm.picture }}
-                  style={{ width: "100%", height: 240 }}
-                />
+                <Image source={{ uri: picture }} style={{ width: '100%', height: 240 }} />
               </View>
             )}
             <TouchableOpacity onPress={takePicture} style={styles.iconCamera}>
@@ -75,42 +119,26 @@ export default function CreatePostsScreen({ navigation }) {
           <TextInput
             style={styles.inputTitle}
             placeholder="Title..."
-            value={stateForm.title}
-            onChangeText={(value) => {
-              setStateForm((prevState) => ({ ...prevState, title: value }));
+            value={title}
+            onChangeText={value => {
+              setTitle(value);
             }}
             onFocus={() => {
               setShowKeyBoard(true);
             }}
           />
           <View style={styles.inputOverlay}>
-            <TextInput
-              style={styles.inputLocation}
-              // placeholder={stateForm.location}
-              placeholder="Location..."
-              value={stateForm.location}
-              onChangeText={(value) => {
-                setStateForm((prevState) => ({
-                  ...prevState,
-                  location: value,
-                }));
-              }}
-              onFocus={() => {
-                setShowKeyBoard(true);
-              }}
-            />
+            <Text style={styles.inputLocation}>
+              {address.city + ', ' + address.country}
+            </Text>
             <MapPinIcon
               style={styles.icon}
               width="24"
               height="24"
-              onPress={() => navigation.navigate("Map")}
+              // onPress={() => navigation.navigate("Map")}
             />
           </View>
-          <TouchableOpacity
-            style={styles.btn}
-            activeOpacity={0.8}
-            onPress={createPost}
-          >
+          <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={createPost}>
             <Text style={styles.btnText}>Create post</Text>
           </TouchableOpacity>
         </View>
@@ -127,17 +155,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
     paddingTop: 30,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   photoContainer: {
     height: 240,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#E8E8E8",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E8E8E8',
   },
   takePhotoContainer: {
-    position: "absolute",
-    width: "100%",
+    position: 'absolute',
+    width: '100%',
     height: 240,
     top: 0,
     left: 0,
@@ -145,26 +173,26 @@ const styles = StyleSheet.create({
   iconCamera: {
     width: 60,
     height: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   text: {
     marginTop: 10,
     marginBottom: 50,
     fontSize: 16,
     lineHeight: 19,
-    color: "#BDBDBD",
+    color: '#BDBDBD',
   },
   inputTitle: {
     paddingBottom: 15,
     fontSize: 16,
     lineHeight: 19,
     borderBottomWidth: 1,
-    borderBottomColor: "#E8E8E8",
+    borderBottomColor: '#E8E8E8',
   },
-  inputOverlay: { position: "relative" },
+  inputOverlay: { position: 'relative' },
   inputLocation: {
     marginTop: 30,
     paddingLeft: 30,
@@ -172,16 +200,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     borderBottomWidth: 1,
-    borderBottomColor: "#E8E8E8",
+    borderBottomColor: '#E8E8E8',
   },
-  icon: { position: "absolute", bottom: 15 },
+  icon: { position: 'absolute', bottom: 15 },
   btn: {
     marginTop: 30,
     height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#E8E8E8",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF6C00',
     borderRadius: 100,
   },
-  btnText: { fontSize: 16, lineHeight: 19, color: "#BDBDBD" },
+  btnText: { fontSize: 16, lineHeight: 19, color: '#fff' },
 });

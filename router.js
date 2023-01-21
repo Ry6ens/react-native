@@ -1,23 +1,23 @@
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, TouchableOpacity } from "react-native";
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, TouchableOpacity } from 'react-native';
 
-import Login from "./screens/auth/Login";
-import Registration from "./screens/auth/Registration";
-import Home from "./screens/nestedScreens/PostsScreen";
-import HomeScreen from "./screens/main/HomeScreen";
-import CreatePostsScreen from "./screens/main/CreatePostsScreen";
-import ProfileScreen from "./screens/main/ProfileScreen";
+import Login from './screens/auth/Login';
+import Registration from './screens/auth/Registration';
+import Home from './screens/nestedScreens/PostsScreen';
+import HomeScreen from './screens/main/HomeScreen';
+import CreatePostsScreen from './screens/main/CreatePostsScreen';
+import ProfileScreen from './screens/main/ProfileScreen';
 
-import HomeIcon from "./components/icons/Home";
-import CreatePostsIcon from "./components/icons/CreatePosts";
-import ProfileIcon from "./components/icons/Profile";
-import ArrowLeftIcon from "./components/icons/ArrowLeft";
+import HomeIcon from './components/icons/Home';
+import CreatePostsIcon from './components/icons/CreatePosts';
+import ProfileIcon from './components/icons/Profile';
+import ArrowLeftIcon from './components/icons/ArrowLeft';
 
 const MainStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-export const useRoute = (isAuth) => {
+export const useRoute = isAuth => {
   if (!isAuth) {
     return (
       <MainStack.Navigator initialRouteName="Login">
@@ -38,12 +38,16 @@ export const useRoute = (isAuth) => {
 
   if (isAuth) {
     return (
-      <MainTab.Navigator screenOptions={{ tabBarShowLabel: false }}>
+      <MainTab.Navigator
+        screenOptions={{
+          tabBarShowLabel: false,
+        }}
+      >
         <MainTab.Screen
           name="Home"
           component={HomeScreen}
           options={{
-            title: "Home",
+            title: 'Home',
             tabBarIcon: () => <HomeIcon width={34} height={34} />,
             headerShown: false,
           }}
@@ -52,16 +56,16 @@ export const useRoute = (isAuth) => {
           name="CreatePostsScreen"
           component={CreatePostsScreen}
           options={({ navigation }) => ({
-            title: "Create Post",
+            title: 'Create Post',
             tabBarIcon: () => (
               <View
                 style={{
                   width: 70,
                   height: 40,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#FF6C00",
-                  borderRadius: "20",
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#FF6C00',
+                  borderRadius: '20',
                 }}
               >
                 <CreatePostsIcon width={13} height={13} />
@@ -74,9 +78,9 @@ export const useRoute = (isAuth) => {
                   marginLeft: 20,
                   width: 25,
                   height: 25,
-                  alignItems: "center",
+                  alignItems: 'center',
                 }}
-                onPress={() => navigation.navigate("Posts")}
+                onPress={() => navigation.navigate('Posts')}
               >
                 <ArrowLeftIcon width={24} height={24} />
               </TouchableOpacity>
