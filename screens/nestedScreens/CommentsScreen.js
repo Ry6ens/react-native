@@ -1,7 +1,17 @@
-import { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  FlatList,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { useSelector } from 'react-redux';
-import { doc, collection, updateDoc, addDoc } from 'firebase/firestore';
+import { doc, collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { nanoid } from 'nanoid';
 
 import { db } from '../../firebase/config';
 
@@ -12,15 +22,28 @@ import ArrowUp from '../../components/icons/ArrowUp';
 export default function CommentsScreen({ route }) {
   const { postId, picture } = route.params;
   const [comment, setComment] = useState('');
+  const [allComments, setAllComments] = useState([]);
+
   const userName = useSelector(getUserName);
 
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
   const createComment = async () => {
-    const washingtonRef = doc(db, 'posts', postId);
-    await addDoc(collection(washingtonRef, 'comments'), {
+    const commentRef = doc(db, 'posts', postId);
+    await addDoc(collection(commentRef, 'comments'), {
       comment,
       userName,
     });
     setComment('');
+  };
+
+  const getAllComments = async () => {
+    const commentsRef = doc(db, 'posts', postId);
+    await onSnapshot(collection(commentsRef, 'comments'), data => {
+      setAllComments(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+    });
   };
 
   return (
@@ -29,6 +52,18 @@ export default function CommentsScreen({ route }) {
         source={{ uri: picture }}
         style={{ width: '100%', height: 240, borderRadius: 8 }}
       />
+      <SafeAreaView>
+        <FlatList
+          data={allComments}
+          keyExtractor={item => nanoid()}
+          renderItem={({ item }) => (
+            <View>
+              <Text>{item.comment}</Text>
+              <Text>{item.userName}</Text>
+            </View>
+          )}
+        />
+      </SafeAreaView>
       <View style={{ position: 'relative' }}>
         <TextInput
           style={styles.input}

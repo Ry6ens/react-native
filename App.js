@@ -1,16 +1,15 @@
-import { useFonts } from "expo-font";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
+import { useFonts } from 'expo-font';
+import { Provider } from 'react-redux';
 
-import { persistedStore, store } from "./redux/store";
+import { persistedStore, store } from './redux/store';
 
-import Main from "./components/Main";
+import Main from './components/Main';
 
 const App = () => {
   const [fontsLoaded] = useFonts({
-    RobotoBold: require("./assets/fonts/Roboto-Bold.ttf"),
-    RobotoMedium: require("./assets/fonts/Roboto-Medium.ttf"),
-    RobotoRegular: require("./assets/fonts/Roboto-Regular.ttf"),
+    RobotoBold: require('./assets/fonts/Roboto-Bold.ttf'),
+    RobotoMedium: require('./assets/fonts/Roboto-Medium.ttf'),
+    RobotoRegular: require('./assets/fonts/Roboto-Regular.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -19,9 +18,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistedStore}>
-        <Main />
-      </PersistGate>
+      <Main />
     </Provider>
   );
 };

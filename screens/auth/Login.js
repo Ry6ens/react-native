@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -10,14 +10,14 @@ import {
   TouchableWithoutFeedback,
   Platform,
   TouchableOpacity,
-} from "react-native";
-import { useDispatch } from "react-redux";
+} from 'react-native';
+import { useDispatch } from 'react-redux';
 
-import { logIn } from "../../redux/auth/auth-operations";
+import { logIn } from '../../redux/auth/auth-operations';
 
 const initialState = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 
 export default function Login({ navigation }) {
@@ -43,12 +43,10 @@ export default function Login({ navigation }) {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../../assets/images/Photo_BG.jpg")}
+          source={require('../../assets/images/Photo_BG.jpg')}
           style={styles.image}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
-          >
+          <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
             <View
               style={{
                 ...styles.form,
@@ -62,8 +60,8 @@ export default function Login({ navigation }) {
                 inputMode="email"
                 placeholder="Email"
                 value={stateForm.email}
-                onChangeText={(value) => {
-                  setStateForm((prevState) => ({ ...prevState, email: value }));
+                onChangeText={value => {
+                  setStateForm(prevState => ({ ...prevState, email: value }));
                 }}
                 onFocus={() => {
                   setShowKeyBoard(true);
@@ -77,8 +75,8 @@ export default function Login({ navigation }) {
                 inputMode="password"
                 placeholder="Password"
                 value={stateForm.password}
-                onChangeText={(value) => {
-                  setStateForm((prevState) => ({
+                onChangeText={value => {
+                  setStateForm(prevState => ({
                     ...prevState,
                     password: value,
                   }));
@@ -102,8 +100,8 @@ export default function Login({ navigation }) {
               <View style={styles.overlayLogIn}>
                 <Text style={styles.textQuestion}>Don't have an account?</Text>
                 <Text
-                  style={{ ...styles.textQuestion, color: "#FF6C00" }}
-                  onPress={() => navigation.navigate("Registration")}
+                  style={{ ...styles.textQuestion, color: '#FF6C00' }}
+                  onPress={() => navigation.navigate('Registration')}
                 >
                   Sign Up
                 </Text>
@@ -122,26 +120,26 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
+    resizeMode: 'cover',
+    justifyContent: 'flex-end',
   },
   form: {
     paddingLeft: 15,
     paddingRight: 15,
 
-    borderRadius: "25 25 0 0",
+    borderRadius: '25 25 0 0',
 
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
   },
   title: {
     marginTop: 30,
     marginBottom: 15,
 
-    fontFamily: "RobotoMedium",
+    fontFamily: 'RobotoMedium',
     fontSize: 30,
     lineHeight: 35,
-    textAlign: "center",
-    letterSpacing: "0.01em",
+    textAlign: 'center',
+    letterSpacing: '0.01em',
   },
   input: {
     marginTop: 15,
@@ -149,54 +147,54 @@ const styles = StyleSheet.create({
 
     height: 50,
 
-    fontFamily: "RobotoRegular",
+    fontFamily: 'RobotoRegular',
     fontSize: 16,
     lineHeight: 19,
 
-    color: "#212121",
+    color: '#212121',
 
     borderWidth: 1,
-    borderColor: "#E8E8E8",
+    borderColor: '#E8E8E8',
     borderRadius: 8,
 
-    backgroundColor: "#F6F6F6",
+    backgroundColor: '#F6F6F6',
   },
   btnSignUp: {
     marginTop: 40,
     padding: 15,
 
-    alignItems: "center",
+    alignItems: 'center',
 
     height: 50,
 
     borderRadius: 100,
 
-    backgroundColor: "#FF6C00",
+    backgroundColor: '#FF6C00',
   },
   btnSignUpTitle: {
-    fontFamily: "RobotoRegular",
+    fontFamily: 'RobotoRegular',
     fontSize: 16,
     lineHeight: 19,
 
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   overlayLogIn: {
     marginTop: 15,
     marginBottom: 65,
 
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textQuestion: {
     marginRight: 5,
 
-    fontFamily: "RobotoRegular",
+    fontFamily: 'RobotoRegular',
     fontSize: 16,
     lineHeight: 19,
 
-    textAlign: "center",
+    textAlign: 'center',
 
-    color: "#1B4371",
+    color: '#1B4371',
   },
 });

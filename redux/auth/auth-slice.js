@@ -1,23 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { signUp, logIn, logOut, authStateChangedUser } from "./auth-operations";
+import { signUp, logIn, logOut, authStateChangedUser } from './auth-operations';
 
 const initialState = {
-  user: {},
-  message: "",
+  user: { uid: '', email: '', name: '' },
+  message: '',
   stateChange: false,
   loading: false,
   error: null,
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // SignUp by email
     builder
-      .addCase(signUp.pending, (state) => {
+      .addCase(signUp.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -37,7 +37,7 @@ const authSlice = createSlice({
 
     // LogIn
     builder
-      .addCase(logIn.pending, (state) => {
+      .addCase(logIn.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -57,7 +57,7 @@ const authSlice = createSlice({
 
     // LogOut
     builder
-      .addCase(logOut.pending, (state) => {
+      .addCase(logOut.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -69,12 +69,13 @@ const authSlice = createSlice({
 
     // authStateChangedUser
     builder
-      .addCase(authStateChangedUser.pending, (state) => {
+      .addCase(authStateChangedUser.pending, state => {
         state.loading = true;
         state.error = null;
       })
       .addCase(authStateChangedUser.fulfilled, (state, { payload }) => {
         state.loading = false;
+        if (!payload) return;
         state.user = {
           uid: payload.uid,
           email: payload.email,

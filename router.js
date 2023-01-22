@@ -23,13 +23,13 @@ export const useRoute = isAuth => {
       <MainStack.Navigator initialRouteName="Login">
         <MainStack.Screen
           options={{ headerShown: false }}
-          name="Registration"
-          component={Registration}
+          name="Login"
+          component={Login}
         />
         <MainStack.Screen
           options={{ headerShown: false }}
-          name="Login"
-          component={Login}
+          name="Registration"
+          component={Registration}
         />
         <MainStack.Screen name="Home" component={Home} />
       </MainStack.Navigator>

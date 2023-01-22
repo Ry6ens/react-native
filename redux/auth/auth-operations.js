@@ -1,16 +1,16 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
   onAuthStateChanged,
-} from "firebase/auth";
+} from 'firebase/auth';
 
-import auth from "../../firebase/config";
+import auth from '../../firebase/config';
 
 export const signUp = createAsyncThunk(
-  "auth/signup",
+  'auth/signup',
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -27,23 +27,11 @@ export const signUp = createAsyncThunk(
 );
 
 export const logIn = createAsyncThunk(
-  "auth/login",
+  'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
       return user;
-    } catch (error) {
-      console.log("error", error);
-      // return rejectWithValue({ data, status });
-    }
-  }
-);
-
-export const logOut = createAsyncThunk(
-  "auth/logout",
-  async (_, { rejectWithValue }) => {
-    try {
-      await signOut(auth);
     } catch (error) {
       const { data, status } = error.response;
       return rejectWithValue({ data, status });
@@ -51,16 +39,26 @@ export const logOut = createAsyncThunk(
   }
 );
 
+export const logOut = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    const { data, status } = error.response;
+    return rejectWithValue({ data, status });
+  }
+});
+
 export const authStateChangedUser = createAsyncThunk(
-  "auth/authStateChanged",
+  'auth/authStateChanged',
   async (_, { rejectWithValue }) => {
     try {
       let data = null;
-      await onAuthStateChanged(auth, (user) => {
+      await onAuthStateChanged(auth, user => {
         if (user) {
           data = user;
         }
       });
+      if (!data) return null;
       return data;
     } catch (error) {
       const { data, status } = error.response;
